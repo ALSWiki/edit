@@ -1,0 +1,11 @@
+#!/bin/sh
+rm -rf __dist__
+mkdir __dist__
+cp index* __dist__
+cp -r __cache__/lib __dist__/lib || {
+    mkdir -p __cache__/lib
+    curl -o __cache__/lib/jodit.js "https://cdnjs.cloudflare.com/ajax/libs/jodit/3.6.1/jodit.min.js" &
+    curl -o __cache__/lib/jodit.css "https://cdnjs.cloudflare.com/ajax/libs/jodit/3.6.1/jodit.min.css" &
+    wait
+    cp -r __cache__/lib __dist__/lib
+}
