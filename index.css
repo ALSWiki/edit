@@ -2,3 +2,15 @@ main {
   padding: 0 1.25rem;
   font-family: Arial,sans-serif;
 }
+
+.edit-info {
+  margin-bottom: 1.25rem;
+}
+
+.edit-info > * {
+  display: inline;
+}
+
+.edit-info > button {
+  float: right;
+}
