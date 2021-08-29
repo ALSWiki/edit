@@ -6,6 +6,7 @@ cp -r __cache__/lib __dist__/lib || {
     mkdir -p __cache__/lib
     curl -o __cache__/lib/jodit.js "https://cdnjs.cloudflare.com/ajax/libs/jodit/3.6.1/jodit.min.js" &
     curl -o __cache__/lib/jodit.css "https://cdnjs.cloudflare.com/ajax/libs/jodit/3.6.1/jodit.min.css" &
+    curl -L -o __cache__/lib/turndown.js "https://unpkg.com/turndown/dist/turndown.js" &
     wait
     cp -r __cache__/lib __dist__/lib
 }
