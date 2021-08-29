@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./lib/jodit.css" />
     <script defer src="./lib/jodit.js"></script>
     <script defer src="./lib/turndown.js"></script>
+    <script defer src="./lib/sweetalert.js"></script>
     <script defer src="./index.js"></script>
 
     <title>Edit ALSWiki</title>
@@ -18,7 +19,12 @@
   <body>
     <main>
       <h1>Editor</h1>
-      <p>Editing: <input type="text" id="article-title" placeholder="type article title" /></p>
+      <div class="edit-info">
+        <p>Editing: <input type="text" id="article-title" placeholder="type article title" /></p>
+        <button name="upload" title="Upload">
+          Upload change request
+        </button>
+      </div>
       <div id="editor" />
     </main>
   </body>

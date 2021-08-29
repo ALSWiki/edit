@@ -33,7 +33,8 @@ const articleMarkdown = () => toMarkdown(articleHTML());
 
 // View
 const elements = {
-  articleTitle: document.querySelector('#article-title')
+  articleTitle: document.querySelector('#article-title'),
+  uploadButton: document.querySelector('button[name=upload]')
 };
 subArticleName($name => elements.articleTitle.value = $name);
 subArticleHTML($html => editor.setEditorValue($html));
@@ -84,5 +85,11 @@ subArticleName($name => getArticleContents($name).then(setArticleHTML));
 editor.events.on('change', setArticleHTML);
 elements.articleTitle.addEventListener('input', delayed(() => {
   setArticleName(elements.articleTitle.value);
-  console.log(articleName());
 }, 500));
+elements.uploadButton.addEventListener('click', () => {
+  Swal.fire(
+    'Upload failed',
+    'The upload service currently isn\'t up, try again later when we finish it',
+    'error'
+  );
+});
