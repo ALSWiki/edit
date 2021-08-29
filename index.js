@@ -44,7 +44,8 @@ const toMarkdown = turndownService.turndown.bind(turndownService);
 
 const getArticleName = () => new URLSearchParams(window.location.search)
   .get('article')
-  ?.replaceAll('_', ' ');
+  ?.replaceAll('_', ' ')
+  ?? '';
 
 const delayed = (cb, int) => {
   let timeoutId = null;
