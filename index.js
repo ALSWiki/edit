@@ -1,6 +1,7 @@
 'use strict';
 
 const editor = new Jodit('#editor', {
+  buttons: 'bold,italic,underline,strikethrough,eraser,ul,ol,image,file,copyformat,cut,copy,paste,selectall,hr,table,link',
   uploader: {
     insertImageAsBase64URI: true
   }
