@@ -35,14 +35,34 @@ const articleMarkdown = () => toMarkdown(articleHTML());
 const elements = {
   articleTitle: document.querySelector('#article-title')
 };
-subArticleName($name => elements.articleTitle.value = $name.replaceAll('_', ' '));
+subArticleName($name => elements.articleTitle.value = $name);
 subArticleHTML($html => editor.setEditorValue($html));
 
 // Update State
 const turndownService = new TurndownService();
 const toMarkdown = turndownService.turndown.bind(turndownService);
 
-const getArticleName = () => new URLSearchParams(window.location.search).get('article');
+const getArticleName = () => new URLSearchParams(window.location.search)
+  .get('article')
+  ?.replaceAll('_', ' ');
+
+const delayed = (cb, int) => {
+  let timeoutId = null;
+  return (...args) => {
+    if (timeoutId != null) clearTimeout(timeoutId);
+    timeoutId = setTimeout(cb, int);
+  }
+};
+
+const asyncMemoize = fn => {
+  const cache = new Map();
+  return async arg => {
+    if (cache.has(arg)) return cache.get(arg);
+    const result = await fn(arg);
+    cache.set(arg, result);
+    return result;
+  };
+};
 
 const extractArticleHTML = rawArticle => {
   const container = document.createElement('div');
@@ -50,14 +70,18 @@ const extractArticleHTML = rawArticle => {
   return container.querySelector('.article').innerHTML.trim();
 };
 
-const getArticleContents = async articleName => {
-  const articleRoute = `../wiki/en/${articleName}.html`;
+const getArticleContents = asyncMemoize(async articleName => {
+  const articleRoute = `../wiki/en/${articleName.replaceAll(' ', '_')}.html`;
   return await fetch(articleRoute)
     .then(r => r.text())
     .then(extractArticleHTML)
     .catch(() => '');
-};
+});
 
 setArticleName(getArticleName());
 subArticleName($name => getArticleContents($name).then(setArticleHTML));
 editor.events.on('change', setArticleHTML);
+elements.articleTitle.addEventListener('input', delayed(() => {
+  setArticleName(elements.articleTitle.value);
+  console.log(articleName());
+}, 500));
