@@ -80,8 +80,12 @@ const getArticleContents = asyncMemoize(async articleName => {
     .catch(() => '');
 });
 
+const initArticleHTML = html => {
+  if (articleHTML().trim() === '') setArticleHTML(html);
+};
+
 setArticleName(getArticleName());
-subArticleName($name => getArticleContents($name).then(setArticleHTML));
+subArticleName($name => getArticleContents($name).then(initArticleHTML));
 editor.events.on('change', setArticleHTML);
 elements.articleTitle.addEventListener('input', delayed(() => {
   setArticleName(elements.articleTitle.value);
