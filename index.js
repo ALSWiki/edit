@@ -6,6 +6,8 @@ const editor = new Jodit('#editor', {
     insertImageAsBase64URI: true
   }
 });
+const loadDelay = 500;
+const api = endpoint => `https://submedit.r2dev2bb8.repl.co${endpoint}`;
 
 // Makeshift state manager
 const useState = value => {
@@ -84,16 +86,38 @@ const initArticleHTML = html => {
   if (articleHTML().trim() === '') setArticleHTML(html);
 };
 
+const postJSON = (url, body) => fetch(url, {
+  method: 'POST',
+  mode: 'cors',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(body)
+});
+
+const successPopup = () => Swal.fire(
+  'Upload succeeded',
+  'We will review your contribution and may accept it.',
+  'success'
+);
+
+const failurePopup = e => Swal.fire(
+  'Upload failed',
+  `Error: ${e}`,
+  'error'
+);
+
 setArticleName(getArticleName());
 subArticleName($name => getArticleContents($name).then(initArticleHTML));
 editor.events.on('change', setArticleHTML);
 elements.articleTitle.addEventListener('input', delayed(() => {
   setArticleName(elements.articleTitle.value);
-}, 500));
+}, loadDelay));
 elements.uploadButton.addEventListener('click', () => {
-  Swal.fire(
-    'Upload failed',
-    'The upload service currently isn\'t up, try again later when we finish it',
-    'error'
-  );
+  postJSON(api('/article'), {
+    title: articleName(),
+    body: articleMarkdown()
+  })
+    .then(successPopup)
+    .catch(failurePopup);
 });
