@@ -9,6 +9,9 @@ const editor = new Jodit('#editor', {
 const loadDelay = 500;
 const api = endpoint => `https://submedit.r2dev2bb8.repl.co${endpoint}`;
 
+const articleTemplate = `
+`.trim();
+
 // Makeshift state manager
 const useState = value => {
   const subscribers = [];
@@ -28,7 +31,7 @@ const useState = value => {
 
 // State
 const [articleName, setArticleName, subArticleName] = useState('');
-const [articleHTML, setArticleHTML, subArticleHTML] = useState('');
+const [articleHTML, setArticleHTML, subArticleHTML] = useState(articleTemplate);
 
 // Computed State
 const articleMarkdown = () => toMarkdown(articleHTML());
@@ -83,7 +86,7 @@ const getArticleContents = asyncMemoize(async articleName => {
 });
 
 const initArticleHTML = html => {
-  if (articleHTML().trim() === '') setArticleHTML(html);
+  if (articleHTML().trim() === articleTemplate) setArticleHTML(html);
 };
 
 const postJSON = (url, body) => fetch(url, {
