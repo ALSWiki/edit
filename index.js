@@ -11,6 +11,8 @@ const loadDelay = 500;
 const api = endpoint => `https://submedit.r2dev2bb8.repl.co${endpoint}`;
 
 const articleTemplate = `
+<h2>See also</h2>
+<h2>References</h2>
 `.trim();
 
 /**
