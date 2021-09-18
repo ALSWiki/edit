@@ -51,7 +51,6 @@ const elements = {
   uploadButton: document.querySelector('button[name=upload]')
 };
 subArticleName($name => elements.articleTitle.value = $name);
-subArticleHTML($html => editor.setEditorValue($html));
 
 // Update State
 const turndownService = new TurndownService();
@@ -63,12 +62,11 @@ const getArticleName = () => new URLSearchParams(window.location.search)
   ?.replaceAll('_', ' ')
   ?? '';
 
-// FIXME: won't call cb with args
-const delayed = (cb, int) => {
+function delayed(cb, int) {
   let timeoutId = null;
   return (...args) => {
     if (timeoutId != null) clearTimeout(timeoutId);
-    timeoutId = setTimeout(cb, int);
+    timeoutId = setTimeout(() => cb(...args), int);
   }
 };
 
@@ -101,12 +99,13 @@ const getArticleContents = asyncMemoize(async articleName => {
   return await fetch(articleRoute)
     .then(r => r.text())
     .then(extractArticleHTML)
-    .catch(() => '');
+    .catch(() => articleTemplate);
 });
 
 /** @type {(html: String) => void} */
 const initArticleHTML = html => {
-  if (articleHTML().trim() === articleTemplate) setArticleHTML(html);
+  const aHTML = articleHTML().trim();
+  if (aHTML === articleTemplate || aHTML === '') editor.setEditorValue(html);
 };
 
 /** @type {(url: String, body: any) => Promise} */
