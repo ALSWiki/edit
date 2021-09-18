@@ -7,9 +7,15 @@ const editor = new Jodit('#editor', {
   }
 });
 const loadDelay = 500;
+/** @type {(endpoint: String) => String} */
 const api = endpoint => `https://submedit.r2dev2bb8.repl.co${endpoint}`;
 
-// Makeshift state manager
+/**
+ * Makeshift state manager
+ *
+ * @template {T}
+ * @type {(value: T) => [() => T, (newValue: T) => void, (cb: (value: T) => void) => void]}
+ */
 const useState = value => {
   const subscribers = [];
   return [
@@ -31,6 +37,7 @@ const [articleName, setArticleName, subArticleName] = useState('');
 const [articleHTML, setArticleHTML, subArticleHTML] = useState('');
 
 // Computed State
+/** @type {() => String} */
 const articleMarkdown = () => toMarkdown(articleHTML());
 
 // View
@@ -45,11 +52,13 @@ subArticleHTML($html => editor.setEditorValue($html));
 const turndownService = new TurndownService();
 const toMarkdown = turndownService.turndown.bind(turndownService);
 
+/** @type {() => String} */
 const getArticleName = () => new URLSearchParams(window.location.search)
   .get('article')
   ?.replaceAll('_', ' ')
   ?? '';
 
+// FIXME: won't call cb with args
 const delayed = (cb, int) => {
   let timeoutId = null;
   return (...args) => {
@@ -58,7 +67,13 @@ const delayed = (cb, int) => {
   }
 };
 
+/**
+ * @template {T}
+ * @template {E}
+ * @type {(fn: (arg: T) => Promise<E>) => (arg: T) => Promise<E>}
+ */
 const asyncMemoize = fn => {
+  /** @type {Map<T, E>} */
   const cache = new Map();
   return async arg => {
     if (cache.has(arg)) return cache.get(arg);
@@ -68,12 +83,14 @@ const asyncMemoize = fn => {
   };
 };
 
+/** @type {(rawArticle: String) => String} */
 const extractArticleHTML = rawArticle => {
   const container = document.createElement('div');
   container.innerHTML = rawArticle;
   return container.querySelector('.article').innerHTML.trim();
 };
 
+/** @type {(articleName: String) => Promise<String>} */
 const getArticleContents = asyncMemoize(async articleName => {
   const articleRoute = `../wiki/en/${articleName.replaceAll(' ', '_')}.html`;
   return await fetch(articleRoute)
@@ -82,10 +99,12 @@ const getArticleContents = asyncMemoize(async articleName => {
     .catch(() => '');
 });
 
+/** @type {(html: String) => void} */
 const initArticleHTML = html => {
   if (articleHTML().trim() === '') setArticleHTML(html);
 };
 
+/** @type {(url: String, body: any) => Promise} */
 const postJSON = (url, body) => fetch(url, {
   method: 'POST',
   mode: 'cors',
