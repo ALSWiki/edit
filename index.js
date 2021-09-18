@@ -10,6 +10,9 @@ const loadDelay = 500;
 /** @type {(endpoint: String) => String} */
 const api = endpoint => `https://submedit.r2dev2bb8.repl.co${endpoint}`;
 
+const articleTemplate = `
+`.trim();
+
 /**
  * Makeshift state manager
  *
@@ -34,7 +37,7 @@ const useState = value => {
 
 // State
 const [articleName, setArticleName, subArticleName] = useState('');
-const [articleHTML, setArticleHTML, subArticleHTML] = useState('');
+const [articleHTML, setArticleHTML, subArticleHTML] = useState(articleTemplate);
 
 // Computed State
 /** @type {() => String} */
@@ -101,7 +104,7 @@ const getArticleContents = asyncMemoize(async articleName => {
 
 /** @type {(html: String) => void} */
 const initArticleHTML = html => {
-  if (articleHTML().trim() === '') setArticleHTML(html);
+  if (articleHTML().trim() === articleTemplate) setArticleHTML(html);
 };
 
 /** @type {(url: String, body: any) => Promise} */
